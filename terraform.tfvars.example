@@ -1,0 +1,55 @@
+# ==============================================================================
+# AWS Three-Tier Architecture - Example Terraform Variables Template
+# Copy this file to terraform.tfvars and populate with your environment values.
+# NEVER commit terraform.tfvars containing real credentials to version control.
+# ==============================================================================
+
+# AWS Region
+aws_region = "us-east-1"
+
+# Networking Configuration
+vpc_cidr = "10.30.0.0/16"
+
+public_subnets = [
+  { cidr = "10.30.1.0/24", az = "us-east-1a" },
+  { cidr = "10.30.2.0/24", az = "us-east-1b" }
+]
+
+private_subnets = [
+  # Web Tier (Frontend ASG)
+  { cidr = "10.30.3.0/24", az = "us-east-1a" },
+  { cidr = "10.30.4.0/24", az = "us-east-1b" },
+  # App Tier (Backend ASG)
+  { cidr = "10.30.5.0/24", az = "us-east-1a" },
+  { cidr = "10.30.6.0/24", az = "us-east-1b" },
+  # Database Tier (RDS Subnet Group)
+  { cidr = "10.30.7.0/24", az = "us-east-1a" },
+  { cidr = "10.30.8.0/24", az = "us-east-1b" }
+]
+
+# Domain & DNS (Route 53 & ACM)
+domain_name             = "rebel7781.xyz"
+san_names               = ["*.rebel7781.xyz"]
+frontend_record_name    = "somu.rebel7781.xyz"
+backend_record_name     = "api.rebel7781.xyz"
+rds_private_zone_name   = "rds.com"
+rds_record_name         = "book.rds.com"
+
+# Compute & AMIs
+key_name                = "ansible"
+instance_type           = "t3.medium"
+bastion_instance_type   = "t3.micro"
+
+# Region-specific AMI IDs (us-east-1 Ubuntu 22.04 / Custom Pre-baked AMIs)
+frontend_image_id       = "ami-0b43b979fd80c51bb"
+backend_image_id        = "ami-0580db2002f7edccb"
+bastion_image_id        = "ami-0d27e0fb3bac4d724"
+
+# RDS Database Configuration
+db_identifier           = "book-store-app"
+db_name                 = "test"
+db_username             = "admin"
+# Set via environment variable TF_VAR_db_password or secure secret manager in production
+db_password             = "ChangeMeToAStrongPassword123!"
+db_storage_gb           = 30
+db_instance_class       = "db.t3.micro"
